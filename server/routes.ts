@@ -183,6 +183,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mission dispatch endpoint for assigning missions to characters
+  app.post("/api/dispatch", async (req, res) => {
+    try {
+      const { missionCode, characterName } = req.body;
+      
+      if (!missionCode || !characterName) {
+        return res.status(400).json({ message: "Mission code and character name are required" });
+      }
+      
+      const mission = await storage.getMission(missionCode);
+      if (!mission) {
+        return res.status(404).json({ message: "Mission not found" });
+      }
+      
+      // Get all steps for this mission
+      const steps = await storage.getMissionSteps(missionCode);
+      
+      // Update all steps to be assigned to the specified character
+      const updatedSteps = await Promise.all(steps.map(async (step) => {
+        if (step.character !== characterName) {
+          // Create a new mission step with the new character
+          const newStep = await storage.createMissionStep({
+            missionCode: step.missionCode,
+            step: step.step,
+            character: characterName,
+            message: step.message,
+            options: JSON.stringify(JSON.parse(JSON.stringify(step.options))) // Convert to JSON string
+          });
+          return newStep;
+        }
+        return step;
+      }));
+      
+      res.json({ 
+        message: `Mission ${missionCode} has been assigned to ${characterName}`,
+        mission,
+        steps: updatedSteps
+      });
+    } catch (error) {
+      console.error("Dispatch error:", error);
+      res.status(500).json({ message: "Failed to dispatch mission", error: String(error) });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

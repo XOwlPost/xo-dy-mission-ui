@@ -32,6 +32,7 @@ export interface IStorage {
   // Mission step operations
   getMissionStep(missionCode: string, step: number): Promise<MissionStep | undefined>;
   getMissionSteps(missionCode: string): Promise<MissionStep[]>;
+  deleteMissionStep(missionCode: string, step: number): Promise<boolean>;
   createMissionStep(step: InsertMissionStep): Promise<MissionStep>;
   
   // Initialize demo data
@@ -169,7 +170,15 @@ export class MemStorage implements IStorage {
       .sort((a, b) => a.step - b.step);
   }
 
+  async deleteMissionStep(missionCode: string, step: number): Promise<boolean> {
+    const key = `${missionCode}-${step}`;
+    return this.missionSteps.delete(key);
+  }
+
   async createMissionStep(step: InsertMissionStep): Promise<MissionStep> {
+    // Delete any existing step with the same missionCode and step number
+    await this.deleteMissionStep(step.missionCode, step.step);
+    
     const id = this.currentStepId++;
     const newStep: MissionStep = { ...step, id };
     

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import MissionsPage from "@/pages/MissionsPage";
 import ChatPage from "@/pages/ChatPage";
+import AdminPage from "@/pages/AdminPage";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useQuery } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ function Router() {
     <Switch>
       <Route path="/" component={MissionsPage} />
       <Route path="/mission/:code" component={ChatPage} />
+      <Route path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
