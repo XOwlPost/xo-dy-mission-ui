@@ -209,7 +209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             step: step.step,
             character: characterName,
             message: step.message,
-            options: JSON.stringify(JSON.parse(JSON.stringify(step.options))) // Convert to JSON string
+            options: typeof step.options === 'string' ? step.options : JSON.stringify(step.options) // Ensure options is a string
           });
           return newStep;
         }

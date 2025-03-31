@@ -15,13 +15,40 @@ export const characterAvatars = {
 };
 
 // Helper functions for mission interaction
-export function parseStepOptions(optionsJson: string): StepOption[] {
-  try {
-    return JSON.parse(optionsJson);
-  } catch (error) {
-    console.error("Failed to parse step options:", error);
+export function parseStepOptions(optionsJson: string | any): StepOption[] {
+  if (!optionsJson) {
     return [];
   }
+  
+  // If already an array, return it
+  if (Array.isArray(optionsJson)) {
+    return optionsJson;
+  }
+  
+  // If it's a string, try to parse it
+  if (typeof optionsJson === 'string') {
+    try {
+      return JSON.parse(optionsJson);
+    } catch (error) {
+      console.error("Failed to parse step options string:", error);
+      return [];
+    }
+  }
+  
+  // If it's an object but not an array, it might be a JSON object 
+  // that was automatically parsed by the server or API
+  if (typeof optionsJson === 'object') {
+    try {
+      // Convert back to string and parse again to ensure proper format
+      return JSON.parse(JSON.stringify(optionsJson));
+    } catch (error) {
+      console.error("Failed to process step options object:", error);
+      return [];
+    }
+  }
+  
+  console.error("Unknown options format:", optionsJson);
+  return [];
 }
 
 export function calculateProgressPercentage(currentStep: number, totalSteps: number): number {
