@@ -10,15 +10,13 @@ const Header = () => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Link href="/">
-            <a>
-              <motion.div 
-                className="h-10 w-10 rounded-full bg-white p-2 flex items-center justify-center shadow-md cursor-pointer"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-              >
-                <span className="text-primary text-xl font-bold">XO</span>
-              </motion.div>
-            </a>
+            <motion.div 
+              className="h-10 w-10 rounded-full bg-white p-2 flex items-center justify-center shadow-md cursor-pointer"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
+              <span className="text-primary text-xl font-bold">XO</span>
+            </motion.div>
           </Link>
           <h1 className="font-heading font-extrabold text-xl md:text-2xl tracking-wide">XO~Dy Adventure</h1>
         </div>
@@ -28,9 +26,9 @@ const Header = () => {
             <span className="font-medium">{user?.stars || 0}</span>
           </div>
           <Link href="/admin">
-            <a className="bg-white/20 hover:bg-white/30 transition-colors rounded-full p-2">
+            <div className="bg-white/20 hover:bg-white/30 transition-colors rounded-full p-2 cursor-pointer">
               <i className="fas fa-cog text-white"></i>
-            </a>
+            </div>
           </Link>
         </div>
       </div>

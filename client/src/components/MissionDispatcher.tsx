@@ -20,10 +20,13 @@ export function MissionDispatcher() {
   const [selectedCharacter, setSelectedCharacter] = useState<string>('');
 
   // Fetch all missions
-  const { data: missions = [], isLoading } = useQuery<Mission[]>({
+  const { data: missions, isLoading } = useQuery<Mission[]>({
     queryKey: ['/api/missions'],
     refetchOnWindowFocus: false
   });
+  
+  // Make sure missions is always an array
+  const missionsList = Array.isArray(missions) ? missions : [];
 
   // Mutation for dispatch endpoint
   const dispatchMutation = useMutation({
@@ -85,7 +88,7 @@ export function MissionDispatcher() {
                 {isLoading ? (
                   <SelectItem value="loading" disabled>Loading missions...</SelectItem>
                 ) : (
-                  missions?.map((mission: Mission) => (
+                  missionsList.map((mission: Mission) => (
                     <SelectItem key={mission.code} value={mission.code}>
                       {mission.title}
                     </SelectItem>
